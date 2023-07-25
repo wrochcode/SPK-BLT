@@ -53,7 +53,7 @@
                                     <div class="form-group">
                                         <label for="position-option">Tanggungan</label>
                                         <select class="form-control" id="position-option " name="criterias_beban">
-                                            @for ($x = 0 ; $x < count($criterias_beban) ; $x++)
+                                        @for ($x = 0 ; $x < count($criterias_beban) ; $x++)
                                             <option value="{{ $criterias_beban[$x]["id"] }}">{{ $criterias_beban[$x]["nama"] }}</option>
                                             @endfor
                                         </select>
@@ -87,12 +87,6 @@
             <div class="card">
                 <div class="card-header">Alternatif All</div>
                 <div class="card-body">
-                    {{-- <ul>
-                        @for($s=0; $s<count($finalvektor);$s++  )
-                            <li>{{$finalvektor[$s]}}</li>
-                        @endfor
-
-                    </tr> --}}
                     <ul class="list-group mt-4">
 
 

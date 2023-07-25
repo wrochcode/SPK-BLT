@@ -12,19 +12,7 @@ use Illuminate\Support\Facades\DB;
 class AlternatifAllController extends Controller
 {
     public function index(){
-
-        // $data = DB::table('criterias')->join('detail_barang', 'detail_barang.id_barang', '=', 'barang.id_barang')->get();
         $data = DB::table('criterias')->join('sub_criterias', 'sub_criterias.kriteria_id', '=', 'criterias.id')->get();
-        
-        // $buku = DB::table('buku')
-        // ->join('kategori', 'buku.kategori_id', '=', 'kategori.kategori_id')
-        // ->select('buku.judul', 'buku.deskripsi', 'kategori.deskripsi')
-        // ->get();
-        
-        // $buku = DB::table('buku')
-        // ->join('kategori', 'buku.kategori_id', '=', 'kategori.kategori_id')
-        // ->select('buku.judul', 'buku.deskripsi', 'kategori.deskripsi')
-        // ->get();
 
         
         $datakriterias = DB::table('criterias')->orderBy('id', 'asc')->get();
@@ -41,7 +29,7 @@ class AlternatifAllController extends Controller
         // dd($datakriterias_input);
         foreach($datakriterias_input as $inputan_kriteria){
             if($ceklist==0){
-                foreach($datasubkriterias_input as $inputan_sub){
+             foreach($datasubkriterias_input as $inputan_sub){
                     
                     if($indexing == $inputan_sub->kriteria_id){
                         $criterias_pekerjaan[$hitung]["id"]=$inputan_sub->id;
