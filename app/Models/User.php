@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -20,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'username',
         'password',
     ];
 
@@ -40,6 +42,30 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
+
+    //memperkenalkan identifier
+    // public function getRoutekeyName(){
+    //     return 'username';
+    // }
+
+    public function setPasswordAttribute($password){
+        // $this->attributes['password'] = Hash::make($password);
+        $this->attributes['password'] = bcrypt($password);
+    }
+
+    // public function criteria(){
+    //     //contoh sourcode dibawah adalah ketika user_id tidak ada anda bisa dispesifikan nama column yang akan dicari
+    //     // return $this->hasOne(Criteria::class, 'column');
+    //     // return $this->hasOne(Criteria::class, 'user');
+
+    //     //contoh sourcode dibawah adalah ketika user_id ada 
+    //     return $this->hasOne(Criteria::class);
+        
+    // }
+
+    // public function posts(){
+    //     return $this->hasMany(Post::class);
+    // }
+   
 }
