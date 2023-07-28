@@ -1,6 +1,17 @@
 {
-  "tabWidth": 2,
-  "printWidth": 160,
-  "bracketSameLine": true,
-  "bracketSpacing": true
+  "plugins": ["@shufo/prettier-plugin-blade"],
+  "overrides": [
+    {
+      "files": ["*.blade.php"],
+      "options": {
+        "parser": "blade",
+        "tabWidth": 2,
+        "bracketSpacing": true
+      }
+    }
+  ],
+  "scripts": {
+    "prettier": "prettier"
+    ,"tabWidth": 2
+  }
 }
