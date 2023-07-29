@@ -9,9 +9,10 @@ use Illuminate\Support\Facades\DB;
 
 class CriteriaController extends Controller
 {
-    public function index(){
+    public function index()
+    {
 
-        
+
         return view('criterias.index', [
             'criteria' => new Criteria,
             'submit' => 'Create',
@@ -19,59 +20,39 @@ class CriteriaController extends Controller
         ]);
     }
 
-    public function store(CriteriaRequest $request){
-
-        // DB::table('criterias')->insert([
-        //     'kriteria' => $request -> kriteria,
-        //     'bobot_kriteria' => $request -> bobot_kriteria,
-        // ]);
+    public function store(CriteriaRequest $request)
+    {
 
         Criteria::create([
-                'kriteria' => $request -> kriteria,
-                'bobot_kriteria' => $request -> bobot_kriteria,
-            ]);
+            'kriteria' => $request->kriteria,
+            'bobot_kriteria' => $request->bobot_kriteria,
+        ]);
 
         // Criteria::create($request->all());
         return back();
     }
 
-    //aktif digunakan saat menggunakan route resource karena mengguakan model saat mencari parameter id
-    // public function edit(Criteria $criteria){
-    //     return view('criterias.edit', [
-    //         'submit' => 'Update',
-    //         'criteria'=> $criteria,
-            
-    //     ]);
-    // }
-
-    public function edit($id){
+    public function edit($id)
+    {
         $criteria = DB::table('criterias')->where('id', $id)->first();
         return view('criterias.edit', [
             'submit' => 'Update',
-            'criteria'=> $criteria,
-            
+            'criteria' => $criteria,
+
         ]);
     }
 
-    public function update(CriteriaRequest $request, $id){
-        
-        DB::table('criterias')->where('id', $id)->update(['kriteria'=>$request->kriteria]);
+    public function update(CriteriaRequest $request, $id)
+    {
 
-        // Criteria::where('id', $id)->update([
-        //     'kriteria'=>$request->kriteria,
-        //     'bobot_kriteria'=>$request->bobot_kriteria
-        // ]);
-
-        // Criteria::find($id)->update([
-        //     'kriteria'=>$request->kriteria,
-        //     'bobot_kriteria'=>$request->bobot_kriteria,
-        // ]);
+        DB::table('criterias')->where('id', $id)->update(['kriteria' => $request->kriteria]);
 
         return redirect('criterias');
     }
 
-    public function destroy($id){
-        Criteria::find($id)->delete();
+    public function destroy($id)
+    {
+        // Criteria::find($id)->delete();
         return back();
     }
 }

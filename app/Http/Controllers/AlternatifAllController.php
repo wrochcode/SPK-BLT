@@ -24,101 +24,6 @@ class AlternatifAllController extends Controller
         $datakriterias_input = $datakriterias;
         $datasubkriterias_input = $datasubkriterias;
 
-        //cari kerja:
-        $indexing = 1;
-        $hitung = 0;
-        $ceklist = 0;
-        // dd($datakriterias_input);
-        foreach ($datakriterias_input as $inputan_kriteria) {
-            if ($ceklist == 0) {
-                foreach ($datasubkriterias_input as $inputan_sub) {
-
-                    if ($indexing == $inputan_sub->kriteria_id) {
-                        $criterias_pekerjaan[$hitung]["id"] = $inputan_sub->id;
-                        $criterias_pekerjaan[$hitung]["nama"] = $inputan_sub->sub_kriteria;
-                    }
-                    $ceklist = 1;
-                    $hitung++;
-                }
-            }
-        }
-
-        //cari penghasilan:
-        $indexing = 2;
-        $hitung = 0;
-        $ceklist = 0;
-        // dd($datakriterias_input);
-        foreach ($datakriterias_input as $inputan_kriteria) {
-            if ($ceklist == 0) {
-                foreach ($datasubkriterias_input as $inputan_sub) {
-
-                    if ($indexing == $inputan_sub->kriteria_id) {
-                        $criterias__penghasilan[$hitung]["id"] = $inputan_sub->id;
-                        $criterias__penghasilan[$hitung]["nama"] = $inputan_sub->sub_kriteria;
-                        $hitung++;
-                    }
-                    $ceklist = 1;
-                }
-            }
-        }
-
-        //cari Kepemilikan Rumah:
-        $indexing = 3;
-        $hitung = 0;
-        $ceklist = 0;
-        // dd($datakriterias_input);
-        foreach ($datakriterias_input as $inputan_kriteria) {
-            if ($ceklist == 0) {
-                foreach ($datasubkriterias_input as $inputan_sub) {
-
-                    if ($indexing == $inputan_sub->kriteria_id) {
-                        $criterias_aset[$hitung]["id"] = $inputan_sub->id;
-                        $criterias_aset[$hitung]["nama"] = $inputan_sub->sub_kriteria;
-                        $hitung++;
-                    }
-                    $ceklist = 1;
-                }
-            }
-        }
-
-        //cari Kepemilikan Rumah:
-        $indexing = 4;
-        $hitung = 0;
-        $ceklist = 0;
-        // dd($datakriterias_input);
-        foreach ($datakriterias_input as $inputan_kriteria) {
-            if ($ceklist == 0) {
-                foreach ($datasubkriterias_input as $inputan_sub) {
-
-                    if ($indexing == $inputan_sub->kriteria_id) {
-                        $criterias_beban[$hitung]["id"] = $inputan_sub->id;
-                        $criterias_beban[$hitung]["nama"] = $inputan_sub->sub_kriteria;
-                        $hitung++;
-                    }
-                    $ceklist = 1;
-                }
-            }
-        }
-
-        //cari Domisili Rumah:
-        $indexing = 5;
-        $hitung = 0;
-        $ceklist = 0;
-        // dd($datakriterias_input);
-        foreach ($datakriterias_input as $inputan_kriteria) {
-            if ($ceklist == 0) {
-                foreach ($datasubkriterias_input as $inputan_sub) {
-
-                    if ($indexing == $inputan_sub->kriteria_id) {
-                        $criterias_domisili[$hitung]["id"] = $inputan_sub->id;
-                        $criterias_domisili[$hitung]["nama"] = $inputan_sub->sub_kriteria;
-                        $hitung++;
-                    }
-                    $ceklist = 1;
-                }
-            }
-        }
-
         // Final:
         $hitung_main = 0;
         $hitung_sub = 0;
@@ -185,7 +90,6 @@ class AlternatifAllController extends Controller
         }
         $hitung = 0;
         $id = count($datakriterias);
-        $tdata = 0;
         // ===========================================================================Hasil Kasar===========================================================================
 
         // kriteria:
