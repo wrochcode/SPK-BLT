@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CriteriaRequest;
 use App\Models\Criteria;
+use App\Models\SubCriteria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -52,7 +53,17 @@ class CriteriaController extends Controller
 
     public function destroy($id)
     {
-        // Criteria::find($id)->delete();
+        $datasubkriterias = DB::table('sub_criterias')->orderBy('id', 'asc')->get();
+
+        Criteria::find($id)->delete();
+        foreach ($datasubkriterias as $datasubkriteria) {
+            if($id == $datasubkriteria->kriteria_id ){
+                // var_dump($datasubkriteria->id);
+                // Criteria::find($id)->delete();
+                SubCriteria::find($datasubkriteria->id)->delete();
+                
+            }
+        }
         return back();
     }
 }
