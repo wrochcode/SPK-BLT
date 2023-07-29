@@ -13,9 +13,8 @@ class AlternatifAllController extends Controller
 {
     public function index()
     {
-
-        // $data = DB::table('criterias')->join('detail_barang', 'detail_barang.id_barang', '=', 'barang.id_barang')->get();
         $data = DB::table('criterias')->join('sub_criterias', 'sub_criterias.kriteria_id', '=', 'criterias.id')->get();
+
 
         $datakriterias = DB::table('criterias')->orderBy('id', 'asc')->get();
         $datasubkriterias = DB::table('sub_criterias')->orderBy('id', 'asc')->get();
@@ -100,7 +99,7 @@ class AlternatifAllController extends Controller
             }
         }
 
-        //cari Domisili Rumah:
+        //cari Kepemilikan Rumah:
         $indexing = 5;
         $hitung = 0;
         $ceklist = 0;
@@ -118,31 +117,7 @@ class AlternatifAllController extends Controller
                 }
             }
         }
-
-        // Final:
-        $hitung_main = 0;
-        $hitung_sub = 0;
-        $ceklist = 0;
-        $hitung = 0;
-        // dd($datakriterias_input);
-        foreach ($datakriterias_input as $inputan_kriteria) {
-            $title[$hitung] = $inputan_kriteria->kriteria;
-            foreach ($datasubkriterias_input as $inputan_sub) {
-                if ($inputan_kriteria->id == $inputan_sub->kriteria_id) {
-                    $data_all[$hitung_main][$hitung_sub]["id"] = $inputan_sub->id;
-                    $data_all[$hitung_main][$hitung_sub]["nama"] = $inputan_sub->sub_kriteria;
-                    $hitung_sub++;
-                }
-                $ceklist = 1;
-            }
-            $total_sub[$hitung] = $hitung_sub++;
-            $hitung_sub = 0;
-            $hitung_main++;
-            $hitung++;
-        }
-        // dd($total_sub[0]);
-        // dd($data_all);
-        // dd($title);
+        // dd($criterias_domsili);
 
         // ===========================================================================Input===========================================================================
 
@@ -236,6 +211,8 @@ class AlternatifAllController extends Controller
             foreach ($nama_subkriteria as $subs) {
                 if ($alt->id_subkriteria == $subs["id"]) {
                     $varr1 = $subs["nama"];
+                    // var_dump($varr2);
+
                 }
             }
             $nama_kategori = $nama_kriteria[$hitung];
@@ -250,11 +227,13 @@ class AlternatifAllController extends Controller
         }
         // dd($alter);
 
+
+
         // ===========================================================================Lanjutan===========================================================================
         // sub kriteria:
 
         $hitung = 0;
-        $x = 0;
+        // $x=0;
         foreach ($alter as $alterr => $ass) {
             for ($x = 0; $x < count($nama_kriteria); $x++) {
                 foreach ($sk as $subb__kriteria) {
@@ -266,16 +245,14 @@ class AlternatifAllController extends Controller
             }
             $hitung += 1;
         }
-        // dd($vector_s);
-
         $hitung = 0;
+        $isi2 = $isi;
         $y = count($isi);
         for ($ab = 0; $ab < $y; $ab++) {
             $hasil_float[$ab] = $isi[$ab];
         }
 
         $y = 0;
-        $totalskala = 0;
         // dd($hasil_float[4]);
         foreach ($vector_s as $vs) {
             $hasil_total = 0;
@@ -284,118 +261,93 @@ class AlternatifAllController extends Controller
                 $var1 = $vs[$name_k];
                 // $var1 = 0;
                 $var2 = $hasil_float[$x];
-
+                // var_dump($var2);
+                // $var2 = $isi[$z];
+                // dd($var2);
+                // dd($vs[$name_k]);
                 $hasil = $var1 * $var2;
                 $hasil_total += $hasil;
             }
             $hitung += 1;
             $vector_skala[$y] = $hasil_total;
-            $totalskala += $hasil_total; // tambahan
             $y++;
         }
-        // dd($totalskala);
+        // dd($vector_skala);
 
-        //    hitung vektor total:
+        $total = 0;
         for ($x = 0; $x < count($vector_skala); $x++) {
-            $vectors_final[$x] = $vector_skala[$x] / $totalskala;
-            $alter[$x]["bobot"] = $vectors_final[$x];
+            $total += $vector_skala[$x];
+            $vectors_final[$x] = $vector_skala[$x] / $total;
         }
-        // dd($alter);
-
-        //hitung nilai maksimal minimal dari vektor total
         $max = $vectors_final[0];
         $min = $vectors_final[0];
         for ($x = 0; $x < count($vector_skala) - 1; $x++) {
             if ($max < $vectors_final[$x + 1]) {
-                $max = $vectors_final[$x + 1];
+                $max = $vectors_final[$x];
             }
             if ($min > $vectors_final[$x + 1]) {
-                $min = $vectors_final[$x + 1];
+                $min = $vectors_final[$x];
             }
         }
-
-        // var_dump($max);
-        $max_name = $alter[0]["name_warga"];
-        $min_name = $alter[0]["name_warga"];
-        $ma = 0;
-        $mi = 0;
-        $hitung = 0;
-        // var_dump($max);
-        for ($x = 0; $x < count($vector_skala); $x++) {
-            $nilai = $alter[$x]["bobot"];
-            $name = $alter[$x]["name_warga"];
-            // var_dump($min);
-
-            if ($nilai == $max) {
-                $max_name =  $name;
-            }
-            if ($nilai == $min) {
-                $min_name =  $name;
-            }
-        }
-
-        // versi nama:
-        $max = $max_name;
-        $min = $min_name;
+        // dd($vectors_final);
 
 
-        // dd($data_all);
-        $all_all_all = DB::table('alternatif_alls')->orderBy('id', 'asc')->get();
-        // dd($all_all_all);
+
+
+
+
+
+
         return view('alternatifalls.index', [
             'subcriteria' => new SubCriteria,
             'criteria' => new Criteria,
             'alternatifall' => new AlternatifAll,
             'alter' => $alter,
-            // 'max' => number_format($max, 3),
-            // 'min' => number_format($min, 3),
-            'max' => $max,
-            'min' => $min,
+            'max' => number_format($max, 3),
+            'min' => number_format($min, 3),
             'submit' => 'Create',
             'subcriterias_id' => $sub_id,
             'subcriterias_nama' => $sub_nama,
             'count' => $count,
             'criterias' => $datakriterias,
-            'alternatifalls' => $all_all_all,
+            'alternatifalls' => DB::table('alternatif_alls')->orderBy('id', 'asc')->get(),
             'data' => $data,
             'finalvektor' => $vectors_final,
-            //for form
-            'title' => $title,
-            'total_sub' => $total_sub,
-            'final_alternatif' => $data_all, //semua data untuk form
-            // =============================================================
+            'criterias_pekerjaan' => $criterias_pekerjaan,
+            'criterias_penghasilan' => $criterias__penghasilan,
+            'criterias_aset' => $criterias_aset,
+            'criterias_beban' => $criterias_beban,
+            'criterias_domisili' => $criterias_domisili,
 
         ]);
     }
 
     public function store(AlternatifAllRequest $request)
     {
-        $datakriterias = DB::table('criterias')->orderBy('id', 'asc')->get();
+        $loop_kategori[0] = $request->criterias_pekerjaan;
+        $loop_kategori[1] = $request->criterias_penghasilan;
+        $loop_kategori[2] = $request->criterias_aset;
+        $loop_kategori[3] = $request->criterias_beban;
+        $loop_kategori[4] = $request->criterias_domisili;
+        // dd($request);
 
-        // Converter spasi:
-        foreach ($datakriterias as $datakriteria) {
-
-            $huruf = $datakriteria->kriteria[0];
-
-            for ($x = 1; $x < strlen($datakriteria->kriteria); $x++) {
-                if ($datakriteria->kriteria[$x] == " ") {
-                    $datakriteria->kriteria[$x] = "_";
-                }
-                $huruf = $huruf . $datakriteria->kriteria[$x];
-            }
-
-            $datakriteria->kriteria = $huruf;
-        }
-
-        //Input data:
-        foreach ($datakriterias as $datakriteria) {
-            $name_kriteria = $datakriteria->kriteria;
+        for ($x = 0; $x < 5; $x += 1) {
+            $id_kriteria = $x + 1;
             AlternatifAll::create([
-                'id_kriteria' => $datakriteria->id,
-                'id_subkriteria' => $request->$name_kriteria,
+                'id_kriteria' => $id_kriteria,
+                'id_subkriteria' => $loop_kategori[$x],
                 'name_warga' => $request->name_warga,
             ]);
         }
+
+
+        // AlternatifAll::create([
+        //         'id_kriteria' => $request -> id_kriteria,
+        //         'id_subkriteria' => $request -> id_subkriteria,
+        //         'name_warga' => $request -> name_warga,
+        // ]);
+
+        // Criteria::create($request->all());
         return back();
     }
 
@@ -408,6 +360,15 @@ class AlternatifAllController extends Controller
 
         ]);
     }
+
+    // public function edit(AlternatifAll $alteratifall){
+    //     return view('alternatifalls.edit', [
+    //         'submit' => 'Update',
+    //         'alternatifall'=> $alteratifall,
+
+    //     ]);
+    // }
+
 
     public function update(AlternatifAllRequest $request, $id)
     {

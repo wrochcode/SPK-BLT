@@ -12,74 +12,38 @@
             {{-- <form action="/tasks" method="post" class="d-flex"> --}}
             <form action="{{ route('alternatifalls.store') }}" method="post">
               @csrf
-
-              {{-- @include('tasks._form', [
-                            'task' => new App\Models\Task,  
-                             ]) --}}
-              {{-- @include('tasks._form') --}}
               <div class="mb-2">
-                <div class="mb-2">
-                  <div class="form-group">
-                    <label for="position-option">Pekerjaan</label>
-                    <select class="form-control" id="position-option " name="criterias_pekerjaan">
-                      @for ($x = 0; $x < count($criterias_pekerjaan); $x++)
-                        <option value="{{ $criterias_pekerjaan[$x]['id'] }}">{{ $criterias_pekerjaan[$x]['nama'] }}
-                        </option>
-                      @endfor
-                    </select>
-                  </div>
-                </div>
-                <div class="mb-2">
-                  <div class="form-group">
-                    <label for="position-option">Penghasilan</label>
-                    <select class="form-control" id="position-option " name="criterias_penghasilan">
-                      @for ($x = 0; $x < count($criterias_penghasilan); $x++)
-                        <option value="{{ $criterias_penghasilan[$x]['id'] }}">{{ $criterias_penghasilan[$x]['nama'] }}
-                        </option>
-                      @endfor
-                    </select>
-                  </div>
-                </div>
-                <div class="mb-2">
-                  <div class="form-group">
-                    <label for="position-option">Kepemilikan Rumah</label>
-                    <select class="form-control" id="position-option " name="criterias_aset">
-                      @for ($x = 0; $x < count($criterias_aset); $x++)
-                        <option value="{{ $criterias_aset[$x]['id'] }}">{{ $criterias_aset[$x]['nama'] }}</option>
-                      @endfor
-                    </select>
-                  </div>
-                </div>
-                <div class="mb-2">
-                  <div class="form-group">
-                    <label for="position-option">Tanggungan</label>
-                    <select class="form-control" id="position-option " name="criterias_beban">
-                      @for ($x = 0; $x < count($criterias_beban); $x++)
-                        <option value="{{ $criterias_beban[$x]['id'] }}">{{ $criterias_beban[$x]['nama'] }}</option>
-                      @endfor
-                    </select>
-                  </div>
-                </div>
-                <div class="mb-2">
-                  <div class="form-group">
-                    <label for="position-option">Domisili</label>
-                    <select class="form-control" id="position-option " name="criterias_domisili">
-                      @for ($x = 0; $x < count($criterias_domisili); $x++)
-                        <option value="{{ $criterias_domisili[$x]['id'] }}">{{ $criterias_domisili[$x]['nama'] }}
-                        </option>
-                      @endfor
-                    </select>
-                  </div>
-                </div>
-                <div class="mb-2">
+                {{-- new: --}}
 
-                  <h5> Nama warga</h5>
-                  <input type="text" name="name_warga" class="form-control" value="{{ $alternatifall->name_warga }}"
-                    placeholder="the name of the name warga">
+                <div class="mb-2">
+                  <div class="form-group ">
+                    @for ($x = 0; $x < count($title); $x++)
+                      <h5>{{ $title[$x] }}</h5>
+                      <select class="form-control form-control-lg mb-3" id="position-option "
+                        name="{{ $title[$x] }}">
+                        {{-- <option selected>Open this select menu</option> --}}
+                        @for ($y = 0; $y < $total_sub[$x]; $y++)
+                          <option value="{{ $final_alternatif[$x][$y]['id'] }}">{{ $final_alternatif[$x][$y]['nama'] }}
+                          </option>
+                        @endfor
+                      </select>
+                    @endfor
+                  </div>
                 </div>
-              </div>
-              <button class="btn btn-primary" type="submit">{{ $submit }}</button>
+                <div class="mb-2">
+                  <div class="form-group ">
+                    <h5>Nama Warga</h5>
+                    <input type="text" name="name_warga" class="form-control"
+                      placeholder="the name of the name warga">
 
+                  </div>
+                </div>
+                {{-- end new --}}
+
+                {{-- end form --}}
+                <div class="mb-2">
+                  <button class="btn btn-primary" type="submit">{{ $submit }}</button>
+                </div>
             </form>
           </div>
 
@@ -126,27 +90,6 @@
 
                     </tr>
                   @endforeach
-                  <ul>
-                    {{-- @for ($s = 0; $s < count($finalvektor); $s++)
-                            <li>{{$finalvektor[$s]}}</li>
-                        @endfor --}}
-                    <td>
-                      <div class="d-flex">
-
-                        {{-- <a class="btn btn-primary me-2" href="/tasks/{{$task->id}}/edit">edit</a> --}}
-                        {{-- <a class="btn btn-primary me-2" href="{{route('alternatifalls.edit', $subcriteria->id)}}">edit</a> --}}
-
-                        {{-- <form action="/tasks/{{$task->id}}" method="post"> --}}
-
-                        {{-- <form action="{{route( 'alternatifalls.destroy',$a["name_warga"])}}" method="post">
-                                                @csrf
-                                                @method('delete')
-                                                <button class="btn btn-danger" type="submit">delete</button>
-                                            </form> --}}
-                      </div>
-                    </td>
-
-                    </tr>
 
                 </table>
 

@@ -58,12 +58,12 @@ class SubCriteriaSeeder extends Seeder
                     ],
                     [
                     'kriteria_id'=>'3',
-                    'sub_kriteria'=>'Mengintrak',
+                    'sub_kriteria'=>'Mengontrak',
                     'nilai_skala'=>'2',
                     ],
                     [
                     'kriteria_id'=>'3',
-                    'sub_kriteria'=>'menumpang keluarga ( pisah kk )',
+                    'sub_kriteria'=>'Menumpang Keluarga ( pisah kk )',
                     'nilai_skala'=>'3',
                     ],
                         [
