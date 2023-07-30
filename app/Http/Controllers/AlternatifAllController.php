@@ -101,8 +101,7 @@ class AlternatifAllController extends Controller
         // Buat Array Nama:
         $jmlhdata = 0;
         $hitung = 0;
-        
-        $jumlah_criteria = count($datakriterias);
+
         foreach ($dataalternatif as $alt) {
             foreach ($datakriterias as $datakriteria) {
                 if ($hitung == 0) {
@@ -130,27 +129,46 @@ class AlternatifAllController extends Controller
         // dd($wargaa);
 
         // === Buat Array Alternatif Final ===
-        $hitung = 0;
         $jmlhdata = 0;
         $id = count($datakriterias);
-        foreach ($dataalternatif as $alt) {
-            if ($hitung == 0) {
-                $alter[$jmlhdata]['name_warga'] = $wargaa[$jmlhdata];
-            }
-            // var_dump($alt->id_subkriteria);
-            foreach ($nama_subkriteria as $subs) {
-                if ($alt->id_subkriteria == $subs["id"]) {
-                    $varr1 = $subs["nama"];
+        $indikator_kategori = 0;
+        for ($x = 0; $x < count($wargaa); $x++) {
+            $alter[$x]["Nama"] = $wargaa[$x];
+            $hitung = 0;
+            foreach ($datakriterias as $datakriteria) {
+                // echo $datakriteria->kriteria . ",";
+                foreach ($dataalternatif as $alt) {
+                    if ($alt->name_warga == $wargaa[$x] && $alt->id_kriteria == $datakriteria->id) {
+                        $hasil= $alt->id_subkriteria;
+                        if ($alt->id_subkriteria == null) {
+                            $hasil=0;
+                        }
+                        $nilai_sub[$indikator_kategori][$hitung] = $hasil;
+                        // echo $nilai_sub[$indikator_kategori][$hitung]." [".$hitung."] ,";
+                        $hitung++;
+                        // echo $hitung;
+                    }
+                    // var_dump($datakriteria->kriteria);
                 }
             }
-            $nama_kategori = $nama_kriteria[$hitung];
-            $nama_subkategori = $varr1;
-            // var_dump($nama_subkategori);
-            $alter[$jmlhdata][$nama_kategori] = $nama_subkategori;
-            $hitung++;
-            if ($hitung == $id) {
-                $jmlhdata++;
-                $hitung = 0;
+            $indikator_kategori++;
+            // echo "<br>";
+            $jmlhdata++;
+        }
+        for ($y = 0; $y < count($nilai_sub); $y++) {
+            $x=0;
+            foreach ($datakriterias as $datakriteria) {
+                foreach ($datasubkriterias as $datasubkriteria) {
+                    if ($datasubkriteria->id == $nilai_sub[$y][$x]) {
+                        $alter[$y][$datakriteria->kriteria] = $datasubkriteria->sub_kriteria;
+                        // echo "jadi";
+                    }
+                    
+                }
+                if (0 == $nilai_sub[$y][$x]) {
+                    $alter[$y][$datakriteria->kriteria] = "Belum di Input";
+                }
+                $x++;
             }
         }
         dd($alter);
