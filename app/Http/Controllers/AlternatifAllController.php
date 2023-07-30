@@ -24,10 +24,9 @@ class AlternatifAllController extends Controller
         $datakriterias_input = $datakriterias;
         $datasubkriterias_input = $datasubkriterias;
 
-        // Final:
+        // === Final Form Input ===
         $hitung_main = 0;
         $hitung_sub = 0;
-        $ceklist = 0;
         $hitung = 0;
         // dd($datakriterias_input);
         foreach ($datakriterias_input as $inputan_kriteria) {
@@ -72,27 +71,16 @@ class AlternatifAllController extends Controller
             $isi[$hitung] =  $bobot / $tb;
             $hitung++;
         }
-        $hitung = 0;
+        // dd($isi);
 
 
 
         // ===========================================================================Hasil Kasar===========================================================================
 
-        $count = 0;
-        foreach ($datakriterias as $datakriteria) {
-            foreach ($datasubkriterias as $datasubkriteria) {
-                if ($datakriteria->id == $datasubkriteria->kriteria_id) {
-                    $sub_id[$count] = $datasubkriteria->id;
-                    $sub_nama[$count] = $datasubkriteria->sub_kriteria;
-                    $count++;
-                }
-            }
-        }
-        $hitung = 0;
-        $id = count($datakriterias);
         // ===========================================================================Hasil Kasar===========================================================================
 
         // kriteria:
+        $hitung = 0;
         $jmlhdata = 0;
         $dataalternatif = DB::table('alternatif_alls')->orderBy('id', 'asc')->get();
 
@@ -100,7 +88,7 @@ class AlternatifAllController extends Controller
             $nama_kriteria[$hitung] = $datakriteria->kriteria;
             $hitung++;
         }
-        // sub:
+        // === Buat Array Sub ===
         $hitung = 0;
         foreach ($datasubkriterias as $datasubkriteria) {
             $nama_subkriteria[$hitung]["nama"] = $datasubkriteria->sub_kriteria;
@@ -113,29 +101,42 @@ class AlternatifAllController extends Controller
         // Buat Array Nama:
         $jmlhdata = 0;
         $hitung = 0;
+        
+        $jumlah_criteria = count($datakriterias);
         foreach ($dataalternatif as $alt) {
-            if ($hitung == 0) {
-                $wargaa[$jmlhdata] = $alt->name_warga;
+            foreach ($datakriterias as $datakriteria) {
+                if ($hitung == 0) {
+                    $nama_temp = $alt->name_warga;
+                }
             }
-            $hitung++;
-            // var_dump($hitung);
-            if ($hitung == $id) {
+            if (isset($wargaa)) {
+                $sama = 0;
+                for ($x = 0; $x < $jmlhdata; $x++) {
+                    if ($nama_temp == $wargaa[$x]) {
+                        $sama++;
+                    }
+                }
+                if ($sama == 0) { // cek ada kesamaan data atau engga
+                    $wargaa[$jmlhdata] = $nama_temp;
+                    $jmlhdata++;
+                }
+            } else {
+                $wargaa[$jmlhdata] = $nama_temp;
                 $jmlhdata++;
-                $hitung = 0;
             }
         }
         // dd($wargaa);
         // dd($jmlhdata);
+        // dd($wargaa);
 
-        
-        // final:
+        // === Buat Array Alternatif Final ===
         $hitung = 0;
         $jmlhdata = 0;
+        $id = count($datakriterias);
         foreach ($dataalternatif as $alt) {
             if ($hitung == 0) {
                 $alter[$jmlhdata]['name_warga'] = $wargaa[$jmlhdata];
             }
-
             // var_dump($alt->id_subkriteria);
             foreach ($nama_subkriteria as $subs) {
                 if ($alt->id_subkriteria == $subs["id"]) {
@@ -152,7 +153,7 @@ class AlternatifAllController extends Controller
                 $hitung = 0;
             }
         }
-        // dd($alter);
+        dd($alter);
 
         // ===========================================================================Lanjutan===========================================================================
         // sub kriteria:
@@ -173,15 +174,14 @@ class AlternatifAllController extends Controller
         }
         // dd($vector_s);
 
+
+        // === Total Skala ===
         $hitung = 0;
-        $y = count($isi);
-        for ($ab = 0; $ab < $y; $ab++) {
+        for ($ab = 0; $ab < count($isi); $ab++) {
             $hasil_float[$ab] = $isi[$ab];
         }
-
         $y = 0;
         $totalskala = 0;
-        // dd($hasil_float[4]);
         foreach ($vector_s as $vs) {
             $hasil_total = 0;
             for ($x = 0; $x < count($nama_kriteria); $x++) {
@@ -200,14 +200,14 @@ class AlternatifAllController extends Controller
         }
         // dd($totalskala);
 
-        //    hitung vektor total:
+        // === Hitung vektor total ===
         for ($x = 0; $x < count($vector_skala); $x++) {
             $vectors_final[$x] = $vector_skala[$x] / $totalskala;
             $alter[$x]["bobot"] = $vectors_final[$x];
         }
         // dd($alter);
 
-        //hitung nilai maksimal minimal dari vektor total
+        // === Hitung nilai maksimal minimal dari vektor total ===
         $max = $vectors_final[0];
         $min = $vectors_final[0];
         for ($x = 0; $x < count($vector_skala) - 1; $x++) {
@@ -219,13 +219,10 @@ class AlternatifAllController extends Controller
             }
         }
 
-        // var_dump($max);
+        // === Converter Max Min Versi Nama ===
         $max_name = $alter[0]["name_warga"];
         $min_name = $alter[0]["name_warga"];
-        $ma = 0;
-        $mi = 0;
         $hitung = 0;
-        // var_dump($max);
         for ($x = 0; $x < count($vector_skala); $x++) {
             $nilai = $alter[$x]["bobot"];
             $name = $alter[$x]["name_warga"];
@@ -239,11 +236,8 @@ class AlternatifAllController extends Controller
             }
         }
 
-        // versi nama:
         $max = $max_name;
         $min = $min_name;
-
-
         // dd($data_all);
         $all_all_all = DB::table('alternatif_alls')->orderBy('id', 'asc')->get();
         // dd($all_all_all);
@@ -257,9 +251,6 @@ class AlternatifAllController extends Controller
             'max' => $max,
             'min' => $min,
             'submit' => 'Create',
-            'subcriterias_id' => $sub_id,
-            'subcriterias_nama' => $sub_nama,
-            'count' => $count,
             'criterias' => $datakriterias,
             'alternatifalls' => $all_all_all,
             'data' => $data,

@@ -24,35 +24,61 @@ class CriteriaController extends Controller
 
     public function store(CriteriaRequest $request)
     {
-        // === Create Criteria ===
-        Criteria::create([
-            'kriteria' => $request->kriteria,
-            'bobot_kriteria' => $request->bobot_kriteria,
-        ]);
 
         // === Buat Array Nama ===
         $jmlhdata = 0;
         $hitung = 0;
         $datakriterias = DB::table('criterias')->orderBy('id', 'asc')->get();
         $dataalternatif = DB::table('alternatif_alls')->orderBy('id', 'asc')->get();
-        $jumlah_criteria = count($datakriterias);
-        $jumlah_criteria = $jumlah_criteria - 1; //di minus satu karena total kriteria sudah beda dari yang sebelumnya
+
+        // New step :
         foreach ($dataalternatif as $alt) {
-            if ($hitung == 0) {
-                $wargaa[$jmlhdata] = $alt->name_warga;
-                $nama_temp = $alt->name_warga;
+            foreach ($datakriterias as $datakriteria) {
+                if ($hitung == 0) {
+                    $nama_temp = $alt->name_warga;
+                }
             }
-            if($alt->name_warga == $nama_temp){
-                
-                $hitung++;
-            }
-            // var_dump("Hitung: ".$hitung);
-            if ($hitung == $jumlah_criteria) {
+            if (isset($wargaa)) {
+                $sama = 0;
+                for ($x = 0; $x < $jmlhdata; $x++) {
+                    if ($nama_temp == $wargaa[$x]) {
+                        $sama++;
+                    }
+                }
+                if ($sama == 0) { // cek ada kesamaan data atau engga
+                    $wargaa[$jmlhdata] = $nama_temp;
+                    $jmlhdata++;
+                }
+            } else {
+                $wargaa[$jmlhdata] = $nama_temp;
                 $jmlhdata++;
-                $hitung = 0;
             }
-            // var_dump($jumlah_criteria);
         }
+
+        // === Create Criteria ===
+        Criteria::create([
+            'kriteria' => $request->kriteria,
+            'bobot_kriteria' => $request->bobot_kriteria,
+        ]);
+
+
+
+        // foreach ($dataalternatif as $alt) {
+        //     if ($hitung == 0) {
+        //         $wargaa[$jmlhdata] = $alt->name_warga;
+        //         $nama_temp = $alt->name_warga;
+        //     }
+        //     if($alt->name_warga == $nama_temp){
+                
+        //         $hitung++;
+        //     }
+        //     // var_dump("Hitung: ".$hitung);
+        //     if ($hitung == $jumlah_criteria) {
+        //         $jmlhdata++;
+        //         $hitung = 0;
+        //     }
+        //     // var_dump($jumlah_criteria);
+        // }
         // dd($wargaa);
         $last_data = Criteria::orderByDesc('created_at')->first();
         // dd($last_data->id);

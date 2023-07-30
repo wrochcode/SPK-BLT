@@ -49,13 +49,12 @@
 
         </div>
 
+        {{-- Show Alternatif All --}}
         <div class="card">
           <div class="card-header">Alternatif All</div>
           <div class="card-body">
             <ul class="list-group mt-4">
-
               <li class="list-group-item d-flex align-items-center justify-content-between">
-
                 <table class="table">
                   <thead>
                     <tr>
@@ -87,32 +86,19 @@
                           <button class="btn btn-danger" type="submit">delete</button>
                         </form>
                       </td>
-
                     </tr>
                   @endforeach
-
                 </table>
-
               </li>
-
             </ul>
-
           </div>
         </div>
 
         <div class="card">
           <div class="card-header">Alternatif All</div>
           <div class="card-body">
-            {{-- <ul>
-                        @for ($s = 0; $s < count($finalvektor); $s++)
-                            <li>{{$finalvektor[$s]}}</li>
-                        @endfor
-
-                    </tr> --}}
             <ul class="list-group mt-4">
-
               <li class="list-group-item d-flex align-items-center justify-content-between">
-
                 <table class="table">
                   <thead>
                     <tr>
