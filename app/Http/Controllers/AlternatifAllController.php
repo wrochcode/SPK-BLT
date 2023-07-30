@@ -54,6 +54,7 @@ class AlternatifAllController extends Controller
 
 
         // ===========================================================================Hasil Kasar===========================================================================
+        // Hitung Bobot:
         $tw = $datakriterias; //data kriteria
         $sk = $datasubkriterias; //data kriteria
         $tb = 0; //total bobot
@@ -80,7 +81,6 @@ class AlternatifAllController extends Controller
         $count = 0;
         foreach ($datakriterias as $datakriteria) {
             foreach ($datasubkriterias as $datasubkriteria) {
-
                 if ($datakriteria->id == $datasubkriteria->kriteria_id) {
                     $sub_id[$count] = $datasubkriteria->id;
                     $sub_nama[$count] = $datasubkriteria->sub_kriteria;
@@ -110,7 +110,7 @@ class AlternatifAllController extends Controller
         }
         // dd($nama_subkriteria);
 
-        // nama:
+        // Buat Array Nama:
         $jmlhdata = 0;
         $hitung = 0;
         foreach ($dataalternatif as $alt) {
@@ -124,13 +124,13 @@ class AlternatifAllController extends Controller
                 $hitung = 0;
             }
         }
+        // dd($wargaa);
+        // dd($jmlhdata);
 
-
+        
+        // final:
         $hitung = 0;
         $jmlhdata = 0;
-
-        // final:
-        // var_dump($nama_subkriteria[3]["id"]);
         foreach ($dataalternatif as $alt) {
             if ($hitung == 0) {
                 $alter[$jmlhdata]['name_warga'] = $wargaa[$jmlhdata];
@@ -159,6 +159,7 @@ class AlternatifAllController extends Controller
 
         $hitung = 0;
         $x = 0;
+        // dd($nama_kriteria);
         foreach ($alter as $alterr => $ass) {
             for ($x = 0; $x < count($nama_kriteria); $x++) {
                 foreach ($sk as $subb__kriteria) {

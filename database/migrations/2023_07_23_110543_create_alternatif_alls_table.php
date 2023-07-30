@@ -16,17 +16,10 @@ return new class extends Migration
         Schema::create('alternatif_alls', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('id_kriteria');
-            $table->integer('id_subkriteria');
+            $table->integer('id_subkriteria')->nullable();
             $table->string('name_warga');
             
             $table->timestamps();
-            // $table->string('k_pekerjaan');
-            // $table->string('k_penghasilan');
-            // $table->string('k_rumah');
-            // $table->string('k_tanggungan');
-            // $table->string('k_domisili');
-            
-            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
