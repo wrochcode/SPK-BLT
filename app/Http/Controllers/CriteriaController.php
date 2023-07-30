@@ -57,29 +57,9 @@ class CriteriaController extends Controller
 
         // === Create Criteria ===
         Criteria::create([
-            'kriteria' => $request->kriteria,
+            'kriteria' => ucwords($request->kriteria),
             'bobot_kriteria' => $request->bobot_kriteria,
         ]);
-
-
-
-        // foreach ($dataalternatif as $alt) {
-        //     if ($hitung == 0) {
-        //         $wargaa[$jmlhdata] = $alt->name_warga;
-        //         $nama_temp = $alt->name_warga;
-        //     }
-        //     if($alt->name_warga == $nama_temp){
-                
-        //         $hitung++;
-        //     }
-        //     // var_dump("Hitung: ".$hitung);
-        //     if ($hitung == $jumlah_criteria) {
-        //         $jmlhdata++;
-        //         $hitung = 0;
-        //     }
-        //     // var_dump($jumlah_criteria);
-        // }
-        // dd($wargaa);
         $last_data = Criteria::orderByDesc('created_at')->first();
         // dd($last_data->id);
         for ($x = 0 ; $x <count($wargaa);$x++) {

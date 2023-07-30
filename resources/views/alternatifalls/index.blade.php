@@ -3,7 +3,7 @@
 <x-app-layout>
   <div class="container">
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-10">
 
         <div class="card">
           <div class="card-header">Create New Task</div>
@@ -61,8 +61,9 @@
                       <th>No</th>
                       <th>Nama</th>
                       @foreach ($criterias as $criteria)
-                        <th>{{ $criteria->kriteria }}</th>
+                      <th>{{ $criteria->kriteria }}</th>
                       @endforeach
+                      <th>Aksi</th>
                       {{-- <th>Bobot</th> --}}
                     </tr>
                   </thead>
@@ -73,11 +74,9 @@
                     <tr>
                       <td>{{ $hitung++ }}</td>
                       <td>{{ $a['name_warga'] }}</td>
-                      <td>{{ $a['Pekerjaan'] }}</td>
-                      <td>{{ $a['Penghasilan'] }}</td>
-                      <td>{{ $a['Kepemilikan Rumah'] }}</td>
-                      <td>{{ $a['Tanggungan'] }}</td>
-                      <td>{{ $a['Domisili'] }}</td>
+                      @foreach ($criterias as $criteria)
+                        <td>{{ $a[$criteria->kriteria] }}</td>
+                      @endforeach
                       {{-- <td>{{ $finalvektor[$hitung-2] }}</td> --}}
                       <td>
                         <form action="{{ route('alternatifalls.destroy', $a['name_warga']) }}" method="post">

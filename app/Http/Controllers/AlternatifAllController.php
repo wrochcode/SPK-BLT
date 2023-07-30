@@ -126,27 +126,27 @@ class AlternatifAllController extends Controller
         }
         // dd($wargaa);
         // dd($jmlhdata);
-        // dd($wargaa);
 
         // === Buat Array Alternatif Final ===
         $jmlhdata = 0;
         $id = count($datakriterias);
         $indikator_kategori = 0;
+        // dd($wargaa);
         for ($x = 0; $x < count($wargaa); $x++) {
-            $alter[$x]["Nama"] = $wargaa[$x];
+            $alter[$x]["name_warga"] = $wargaa[$x];
             $hitung = 0;
             foreach ($datakriterias as $datakriteria) {
-                // echo $datakriteria->kriteria . ",";
                 foreach ($dataalternatif as $alt) {
                     if ($alt->name_warga == $wargaa[$x] && $alt->id_kriteria == $datakriteria->id) {
-                        $hasil= $alt->id_subkriteria;
+                        $hasil = $alt->id_subkriteria;
                         if ($alt->id_subkriteria == null) {
-                            $hasil=0;
+                            $hasil = 0;
                         }
+                        // if ($alt->id_subkriteria == 0) {
+                        //     $hasil=0;
+                        // }
                         $nilai_sub[$indikator_kategori][$hitung] = $hasil;
-                        // echo $nilai_sub[$indikator_kategori][$hitung]." [".$hitung."] ,";
                         $hitung++;
-                        // echo $hitung;
                     }
                     // var_dump($datakriteria->kriteria);
                 }
@@ -155,15 +155,15 @@ class AlternatifAllController extends Controller
             // echo "<br>";
             $jmlhdata++;
         }
+        // dd($nilai_sub);
         for ($y = 0; $y < count($nilai_sub); $y++) {
-            $x=0;
+            $x = 0;
             foreach ($datakriterias as $datakriteria) {
                 foreach ($datasubkriterias as $datasubkriteria) {
                     if ($datasubkriteria->id == $nilai_sub[$y][$x]) {
                         $alter[$y][$datakriteria->kriteria] = $datasubkriteria->sub_kriteria;
                         // echo "jadi";
                     }
-                    
                 }
                 if (0 == $nilai_sub[$y][$x]) {
                     $alter[$y][$datakriteria->kriteria] = "Belum di Input";
@@ -171,21 +171,27 @@ class AlternatifAllController extends Controller
                 $x++;
             }
         }
-        dd($alter);
+        // dd($alter);
 
         // ===========================================================================Lanjutan===========================================================================
         // sub kriteria:
 
+        // error :
         $hitung = 0;
         $x = 0;
-        // dd($nama_kriteria);
-        foreach ($alter as $alterr => $ass) {
+        // dd($alter);
+        foreach ($alter as $alterr => $alterrr) {
             for ($x = 0; $x < count($nama_kriteria); $x++) {
                 foreach ($sk as $subb__kriteria) {
                     $name_k = $nama_kriteria[$x];
-                    if ($subb__kriteria->sub_kriteria == $ass[$name_k]) {
+                    if ($subb__kriteria->sub_kriteria == $alterrr[$name_k]) {
+                        // echo $alterrr[$name_k];
                         $vector_s[$hitung][$name_k] = $subb__kriteria->nilai_skala;
                     }
+                    if ("Belum di Input" == $alterrr[$name_k]) {
+                        $vector_s[$hitung][$name_k] = 0;
+                    }
+                    // echo $alterrr[$name_k]." ,";
                 }
             }
             $hitung += 1;
@@ -198,6 +204,7 @@ class AlternatifAllController extends Controller
         for ($ab = 0; $ab < count($isi); $ab++) {
             $hasil_float[$ab] = $isi[$ab];
         }
+        // dd($vector_s);
         $y = 0;
         $totalskala = 0;
         foreach ($vector_s as $vs) {
@@ -205,18 +212,18 @@ class AlternatifAllController extends Controller
             for ($x = 0; $x < count($nama_kriteria); $x++) {
                 $name_k = $nama_kriteria[$x];
                 $var1 = $vs[$name_k];
-                // $var1 = 0;
+                // echo $var1 . " ,";
                 $var2 = $hasil_float[$x];
-
                 $hasil = $var1 * $var2;
-                $hasil_total += $hasil;
+                $hasil_total = $hasil_total + $hasil;
             }
             $hitung += 1;
             $vector_skala[$y] = $hasil_total;
             $totalskala += $hasil_total; // tambahan
             $y++;
+            // echo "<br>";
         }
-        // dd($totalskala);
+        // dd($vector_skala);
 
         // === Hitung vektor total ===
         for ($x = 0; $x < count($vector_skala); $x++) {
@@ -256,7 +263,7 @@ class AlternatifAllController extends Controller
 
         $max = $max_name;
         $min = $min_name;
-        // dd($data_all);
+        // dd($alter);
         $all_all_all = DB::table('alternatif_alls')->orderBy('id', 'asc')->get();
         // dd($all_all_all);
         return view('alternatifalls.index', [
