@@ -92,8 +92,8 @@ class CriteriaController extends Controller
     public function destroy($id)
     {
         $datasubkriterias = DB::table('sub_criterias')->orderBy('id', 'asc')->get();
+        $dataalternatif = DB::table('alternatif_alls')->orderBy('id', 'asc')->get();
 
-        Criteria::find($id)->delete();
         foreach ($datasubkriterias as $datasubkriteria) {
             if($id == $datasubkriteria->kriteria_id ){
                 // var_dump($datasubkriteria->id);
@@ -102,6 +102,17 @@ class CriteriaController extends Controller
                 
             }
         }
+        
+        // dd($dataalternatif);
+        foreach ($dataalternatif as $alt) {
+            if($id == $alt->id_kriteria ){
+                // var_dump($datasubkriteria->id);
+                // Criteria::find($id)->delete();
+                AlternatifAll::find($alt->id)->delete();
+                
+            }
+        }
+        Criteria::find($id)->delete();
         return back();
     }
 }
