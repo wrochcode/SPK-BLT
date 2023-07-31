@@ -11,16 +11,31 @@ use Illuminate\Support\Facades\DB;
 
 class CriteriaController extends Controller
 {
+    private function kriteria()
+    {
+        return Criteria::All();
+    }
+
+    private function sub_kriteria()
+    {
+        return SubCriteria::All();
+    }
+
+    private function alternatif()
+    {
+        return AlternatifAll::All();
+    } 
+
     public function index()
     {
-
-
         return view('criterias.index', [
             'criteria' => new Criteria,
             'submit' => 'Create',
-            'criterias' => DB::table('criterias')->orderBy('id', 'asc')->get(),
+            'criterias' => $this->kriteria(),
         ]);
     }
+
+    
 
     public function store(CriteriaRequest $request)
     {
@@ -28,8 +43,9 @@ class CriteriaController extends Controller
         // === Buat Array Nama ===
         $jmlhdata = 0;
         $hitung = 0;
-        $datakriterias = DB::table('criterias')->orderBy('id', 'asc')->get();
-        $dataalternatif = DB::table('alternatif_alls')->orderBy('id', 'asc')->get();
+        // $datakriterias = DB::table('criterias')->orderBy('id', 'asc')->get();
+        $datakriterias = $this->kriteria();
+        $dataalternatif = $this->alternatif();;
 
         // New step :
         foreach ($dataalternatif as $alt) {
@@ -62,7 +78,7 @@ class CriteriaController extends Controller
         ]);
         $last_data = Criteria::orderByDesc('created_at')->first();
         // dd($last_data->id);
-        for ($x = 0 ; $x <count($wargaa);$x++) {
+        for ($x = 0; $x < count($wargaa); $x++) {
             AlternatifAll::create([
                 'id_kriteria' => $last_data->id,
                 'id_subkriteria' => null,
@@ -95,21 +111,19 @@ class CriteriaController extends Controller
         $dataalternatif = DB::table('alternatif_alls')->orderBy('id', 'asc')->get();
 
         foreach ($datasubkriterias as $datasubkriteria) {
-            if($id == $datasubkriteria->kriteria_id ){
+            if ($id == $datasubkriteria->kriteria_id) {
                 // var_dump($datasubkriteria->id);
                 // Criteria::find($id)->delete();
                 SubCriteria::find($datasubkriteria->id)->delete();
-                
             }
         }
-        
+
         // dd($dataalternatif);
         foreach ($dataalternatif as $alt) {
-            if($id == $alt->id_kriteria ){
+            if ($id == $alt->id_kriteria) {
                 // var_dump($datasubkriteria->id);
                 // Criteria::find($id)->delete();
                 AlternatifAll::find($alt->id)->delete();
-                
             }
         }
         Criteria::find($id)->delete();

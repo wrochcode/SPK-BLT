@@ -11,14 +11,24 @@ use Illuminate\Support\Facades\DB;
 
 class AlternatifAllController extends Controller
 {
+
+    private function kriteria(){
+        return Criteria::All();
+    }
+    private function subKriteria(){
+        return SubCriteria::All();
+    }
+    private function alternatif(){
+        return AlternatifAll::All();
+    }
     public function index()
     {
 
         // $data = DB::table('criterias')->join('detail_barang', 'detail_barang.id_barang', '=', 'barang.id_barang')->get();
         $data = DB::table('criterias')->join('sub_criterias', 'sub_criterias.kriteria_id', '=', 'criterias.id')->get();
 
-        $datakriterias = DB::table('criterias')->orderBy('id', 'asc')->get();
-        $datasubkriterias = DB::table('sub_criterias')->orderBy('id', 'asc')->get();
+        $datakriterias = $this->kriteria();
+        $datasubkriterias = $this->subKriteria();
 
         // ===========================================================================Input===========================================================================
         $datakriterias_input = $datakriterias;
@@ -82,7 +92,7 @@ class AlternatifAllController extends Controller
         // kriteria:
         $hitung = 0;
         $jmlhdata = 0;
-        $dataalternatif = DB::table('alternatif_alls')->orderBy('id', 'asc')->get();
+        $dataalternatif = $this->alternatif();
 
         foreach ($datakriterias as $datakriteria) {
             $nama_kriteria[$hitung] = $datakriteria->kriteria;
@@ -128,7 +138,6 @@ class AlternatifAllController extends Controller
         // dd($jmlhdata);
 
         // === Buat Array Alternatif Final ===
-        $jmlhdata = 0;
         $id = count($datakriterias);
         $indikator_kategori = 0;
         // dd($wargaa);
@@ -153,7 +162,6 @@ class AlternatifAllController extends Controller
             }
             $indikator_kategori++;
             // echo "<br>";
-            $jmlhdata++;
         }
         // dd($nilai_sub);
         for ($y = 0; $y < count($nilai_sub); $y++) {
