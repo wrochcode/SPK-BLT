@@ -12,21 +12,69 @@ use Illuminate\Support\Facades\DB;
 class AlternatifAllController extends Controller
 {
 
-    private function kriteria(){
+    private function kriteria()
+    {
         return Criteria::All();
     }
-    private function subKriteria(){
+
+    private function subKriteria()
+    {
         return SubCriteria::All();
     }
-    private function alternatif(){
+
+    private function alternatif()
+    {
         return AlternatifAll::All();
+    }
+    private function max_min($vectors_final, $vector_skala, $alter)
+    {
+        // === Hitung nilai maksimal minimal dari vektor total ===
+        $max = $vectors_final[0];
+        $min = $vectors_final[0];
+        for ($x = 0; $x < count($vector_skala) - 1; $x++) {
+            if ($max < $vectors_final[$x + 1]) {
+                $max = $vectors_final[$x + 1];
+            }
+            if ($min > $vectors_final[$x + 1]) {
+                $min = $vectors_final[$x + 1];
+            }
+        }
+
+        // === Converter Max Min Versi Nama ===
+        $max_name = $alter[0]["name_warga"];
+        $min_name = $alter[0]["name_warga"];
+        $hitung = 0;
+        for ($x = 0; $x < count($vector_skala); $x++) {
+            $nilai = $alter[$x]["bobot"];
+            $name = $alter[$x]["name_warga"];
+            // var_dump($min);
+
+            if ($nilai == $max) {
+                $max_name =  $name;
+            }
+            if ($nilai == $min) {
+                $min_name =  $name;
+            }
+        }
+
+        // Object
+        $value = (object) [
+            'max' => $max_name,
+            'min' => $min_name,
+        ];
+        return $value;
+    }
+    private function vector_total($vector_skala, $totalskala)
+    {
+        // === Hitung vektor total ===
+        for ($x = 0; $x < count($vector_skala); $x++) {
+            $vectors_final[$x] = $vector_skala[$x] / $totalskala;
+            $bobot[$x] = $vectors_final[$x];
+        }
+        return array('bobot' => $bobot, 'vectors_final' => $vectors_final);
     }
     public function index()
     {
-
-        // $data = DB::table('criterias')->join('detail_barang', 'detail_barang.id_barang', '=', 'barang.id_barang')->get();
-        $data = DB::table('criterias')->join('sub_criterias', 'sub_criterias.kriteria_id', '=', 'criterias.id')->get();
-
         $datakriterias = $this->kriteria();
         $datasubkriterias = $this->subKriteria();
 
@@ -40,7 +88,6 @@ class AlternatifAllController extends Controller
         $hitung = 0;
         // dd($datakriterias_input);
         foreach ($datakriterias_input as $inputan_kriteria) {
-            $title[$hitung] = $inputan_kriteria->kriteria;
             foreach ($datasubkriterias_input as $inputan_sub) {
                 if ($inputan_kriteria->id == $inputan_sub->kriteria_id) {
                     $data_all[$hitung_main][$hitung_sub]["id"] = $inputan_sub->id;
@@ -54,9 +101,6 @@ class AlternatifAllController extends Controller
             $hitung_main++;
             $hitung++;
         }
-        // dd($total_sub[0]);
-        // dd($data_all);
-        // dd($title);
 
         // ===========================================================================Input===========================================================================
 
@@ -183,36 +227,29 @@ class AlternatifAllController extends Controller
 
         // ===========================================================================Lanjutan===========================================================================
         // sub kriteria:
-
-        // error :
         $hitung = 0;
         $x = 0;
-        // dd($alter);
         foreach ($alter as $alterr => $alterrr) {
             for ($x = 0; $x < count($nama_kriteria); $x++) {
                 foreach ($sk as $subb__kriteria) {
                     $name_k = $nama_kriteria[$x];
                     if ($subb__kriteria->sub_kriteria == $alterrr[$name_k]) {
-                        // echo $alterrr[$name_k];
                         $vector_s[$hitung][$name_k] = $subb__kriteria->nilai_skala;
                     }
                     if ("Belum di Input" == $alterrr[$name_k]) {
                         $vector_s[$hitung][$name_k] = 0;
                     }
-                    // echo $alterrr[$name_k]." ,";
                 }
             }
             $hitung += 1;
         }
-        // dd($vector_s);
-
 
         // === Total Skala ===
         $hitung = 0;
         for ($ab = 0; $ab < count($isi); $ab++) {
             $hasil_float[$ab] = $isi[$ab];
         }
-        // dd($vector_s);
+
         $y = 0;
         $totalskala = 0;
         foreach ($vector_s as $vs) {
@@ -229,69 +266,33 @@ class AlternatifAllController extends Controller
             $vector_skala[$y] = $hasil_total;
             $totalskala += $hasil_total; // tambahan
             $y++;
-            // echo "<br>";
         }
-        // dd($vector_skala);
 
         // === Hitung vektor total ===
+        // dd($alter);
         for ($x = 0; $x < count($vector_skala); $x++) {
             $vectors_final[$x] = $vector_skala[$x] / $totalskala;
             $alter[$x]["bobot"] = $vectors_final[$x];
         }
-        // dd($alter);
 
-        // === Hitung nilai maksimal minimal dari vektor total ===
-        $max = $vectors_final[0];
-        $min = $vectors_final[0];
-        for ($x = 0; $x < count($vector_skala) - 1; $x++) {
-            if ($max < $vectors_final[$x + 1]) {
-                $max = $vectors_final[$x + 1];
-            }
-            if ($min > $vectors_final[$x + 1]) {
-                $min = $vectors_final[$x + 1];
-            }
+        $temp = $this->vector_total($vector_skala, $totalskala);
+        $vectors_final = $temp["vectors_final"];
+        $bobot = $temp["bobot"];
+
+        // Tambah atribut ke alter:
+        for ($x = 0; $x < count($alter); $x++) {
+            $alter[$x]["bobot"] = $bobot[$x];
         }
+        // dd($iseng);
 
-        // === Converter Max Min Versi Nama ===
-        $max_name = $alter[0]["name_warga"];
-        $min_name = $alter[0]["name_warga"];
-        $hitung = 0;
-        for ($x = 0; $x < count($vector_skala); $x++) {
-            $nilai = $alter[$x]["bobot"];
-            $name = $alter[$x]["name_warga"];
-            // var_dump($min);
-
-            if ($nilai == $max) {
-                $max_name =  $name;
-            }
-            if ($nilai == $min) {
-                $min_name =  $name;
-            }
-        }
-
-        $max = $max_name;
-        $min = $min_name;
-        // dd($alter);
-        $all_all_all = DB::table('alternatif_alls')->orderBy('id', 'asc')->get();
-        // dd($all_all_all);
         return view('alternatifalls.index', [
-            'subcriteria' => new SubCriteria,
-            'criteria' => new Criteria,
-            'alternatifall' => new AlternatifAll,
             'alter' => $alter,
-            // 'max' => number_format($max, 3),
-            // 'min' => number_format($min, 3),
-            'max' => $max,
-            'min' => $min,
-            'submit' => 'Create',
+            'value' => $this->max_min($vectors_final, $vector_skala, $alter),
             'criterias' => $datakriterias,
-            'alternatifalls' => $all_all_all,
-            'data' => $data,
             'finalvektor' => $vectors_final,
-            //for form
-            'title' => $title,
+            'title' => $this->kriteria()->pluck('kriteria')->toArray(),
             'total_sub' => $total_sub,
-            'final_alternatif' => $data_all, //semua data untuk form
+            'final_alternatif' => $data_all, // Semua data untuk form
             // =============================================================
 
         ]);
@@ -299,7 +300,8 @@ class AlternatifAllController extends Controller
 
     public function store(AlternatifAllRequest $request)
     {
-        $datakriterias = DB::table('criterias')->orderBy('id', 'asc')->get();
+        // $datakriterias = DB::table('criterias')->orderBy('id', 'asc')->get();
+        $datakriterias = $this->alternatif();
 
         // Converter spasi:
         foreach ($datakriterias as $datakriteria) {

@@ -42,7 +42,7 @@
 
                 {{-- end form --}}
                 <div class="mb-2">
-                  <button class="btn btn-primary" type="submit">{{ $submit }}</button>
+                  <button class="btn btn-primary" type="submit">Submit</button>
                 </div>
             </form>
           </div>
@@ -77,7 +77,6 @@
                       @foreach ($criterias as $criteria)
                         <td>{{ $a[$criteria->kriteria] }}</td>
                       @endforeach
-                      {{-- <td>{{ $finalvektor[$hitung-2] }}</td> --}}
                       <td>
                         <form action="{{ route('alternatifalls.destroy', $a['name_warga']) }}" method="post">
                           @csrf
@@ -115,8 +114,12 @@
                     </tr>
                   @endforeach
                   <tr>
-                    <td>Max : {{ $max }}</td>
-                    <td>Min : {{ $min }}</td>
+                    {{-- object: --}}
+                    <td>Max : {{ $value->max }}</td>
+                    <td>Min : {{ $value->min }}</td>
+                    {{-- array: --}}
+                    {{-- <td>Max : {{ $value["max"] }}</td>
+                    <td>Min : {{ $value["min"] }}</td> --}}
                   </tr>
 
                 </table>
